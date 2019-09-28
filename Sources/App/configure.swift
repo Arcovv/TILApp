@@ -3,6 +3,10 @@ import Vapor
 
 /// Called before your application initializes.
 public func configure(_ config: inout Config, _ env: inout Environment, _ services: inout Services) throws {
+  var commandConfig = CommandConfig.default()
+  commandConfig.useFluentCommands()
+  services.register(commandConfig)
+  
   // Register providers first
   try services.register(FluentPostgreSQLProvider())
 
@@ -18,10 +22,23 @@ public func configure(_ config: inout Config, _ env: inout Environment, _ servic
   services.register(middlewares)
 
   var databases = DatabasesConfig()
+  
+  let databaseName: String
+  let databasePort: Int
+  
+  if env == .testing {
+    databaseName = "vapor-test"
+    databasePort = 5433
+  } else {
+    databaseName = "vapor"
+    databasePort = 5432
+  }
+  
   let databaseConfig = PostgreSQLDatabaseConfig(
     hostname: "localhost",
+    port: databasePort,
     username: "vapor",
-    database: "vapor",
+    database: databaseName,
     password: "password"
   )
 
