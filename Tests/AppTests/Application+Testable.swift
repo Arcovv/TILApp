@@ -53,7 +53,7 @@ extension Application {
     method: HTTPMethod,
     headers: HTTPHeaders = .init()
   ) throws -> Response {
-    try sendRequest(to: path, method: method, headers: headers, body: EmptyContent?.none)
+    return try sendRequest(to: path, method: method, headers: headers, body: EmptyContent?.none)
   }
   
   func sendRequest<T: Content>(
@@ -87,7 +87,7 @@ extension Application {
     headers: HTTPHeaders = .init(),
     decodeTo type: T.Type
   ) throws -> T {
-    try getResponse(
+    return try getResponse(
       to: path,
       method: method,
       headers: headers,
